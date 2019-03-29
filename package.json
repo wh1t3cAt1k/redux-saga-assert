@@ -35,5 +35,5 @@
         "redux-saga-test-plan": "^4.0.0-beta.2",
         "typesafe-actions": "^3.2.1"
     },
-    "version": "0.1.0"
+    "version": "0.1.1"
 }
