@@ -1,0 +1,39 @@
+{
+    "name": "redux-saga-assert",
+    "files": [
+        "dist/**/*"
+    ],
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "scripts": {
+        "build": "tsc --skipLibCheck",
+        "test": "jest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/wh1t3cAt1k/redux-saga-assert"
+    },
+    "license": "MIT",
+    "author": {
+        "email": "pavel@kabir.ru",
+        "name": "Pavel Kabir",
+        "url": "http://linkedin.com/in/pkabirr"
+    },
+    "devDependencies": {
+        "@types/jest": "^24.0.11",
+        "@types/lodash": "^4.14.123",
+        "jest": "^24.5.0",
+        "ts-jest": "^24.0.0",
+        "tslint": "^5.14.0",
+        "tslint-config-clean-code": "^1.1.0",
+        "typescript": "^3.3.4000"
+    },
+    "dependencies": {
+        "lodash": "^4.17.11",
+        "redux": "^4.0.1",
+        "redux-saga": "^1.0.2",
+        "redux-saga-test-plan": "^4.0.0-beta.2",
+        "typesafe-actions": "^3.2.1"
+    },
+    "version": "0.1.0"
+}
