@@ -50,6 +50,11 @@ var typesafe_actions_1 = require("typesafe-actions");
 var SagaAssertImplementation = /** @class */ (function () {
     function SagaAssertImplementation(saga) {
         var _this = this;
+        /**
+         * Ensures that the tested saga only responds to the leading specified action
+         * with the specified handler saga and does absolutely nothing else.
+         * Requires enhanced action creator from typesafe-actions.
+         */
         this.justRespondsToLeading = function (args) {
             var saga = _this.saga();
             expect(saga.next().value)
@@ -57,16 +62,30 @@ var SagaAssertImplementation = /** @class */ (function () {
             expect(saga.next().done)
                 .toBe(true);
         };
+        /**
+         * Ensures that the tested saga only responds to the latest specified action
+         * with the specified handler saga and does absolutely nothing else.
+         * Requires enhanced action creator from typesafe-actions.
+         */
         this.justRespondsToLatest = function (args) { return redux_saga_test_plan_1.testSaga(_this.saga)
             .next()
             .takeLatest(typesafe_actions_1.getType(args.action), args.withHandler)
             .next()
             .isDone(); };
+        /**
+         * Ensures that the tested saga only responds to every specified action
+         * with the specified handler saga and does absolutely nothing else.
+         * Requires enhanced action creator from typesafe-actions.
+         */
         this.justRespondsToEvery = function (args) { return redux_saga_test_plan_1.testSaga(_this.saga)
             .next()
             .takeEvery(typesafe_actions_1.getType(args.action), args.withHandler)
             .next()
             .isDone(); };
+        /**
+         * Ensures that the tested saga only spawns (not forks) the specified
+         * sagas and does absolutely nothing else.
+         */
         this.justSpawnsAsync = function () {
             var sagasToSpawn = [];
             for (var _i = 0; _i < arguments.length; _i++) {
