@@ -113,4 +113,5 @@ class SagaAssertImplementation {
         this.saga = saga;
     }
 }
+exports.SagaAssertImplementation = SagaAssertImplementation;
 exports.assertSaga = (saga) => new SagaAssertImplementation(saga);

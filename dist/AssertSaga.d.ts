@@ -8,7 +8,7 @@ declare type MultipleActionsAssertionArguments = {
     actions: ReadonlyArray<ActionCreator<AnyAction>>;
     withHandler: SagaType;
 };
-declare class SagaAssertImplementation {
+export declare class SagaAssertImplementation {
     private readonly saga;
     constructor(saga: SagaType);
     /**
