@@ -20,20 +20,20 @@
         "url": "http://linkedin.com/in/pkabirr"
     },
     "devDependencies": {
-        "@types/jest": "^24.0.11",
-        "@types/lodash": "^4.14.123",
-        "jest": "^24.5.0",
-        "ts-jest": "^24.0.0",
-        "tslint": "^5.14.0",
+        "@types/jest": "^24.0.15",
+        "@types/lodash": "^4.14.135",
+        "jest": "^24.8.0",
+        "ts-jest": "^24.0.2",
+        "tslint": "^5.18.0",
         "tslint-config-clean-code": "^4.0.5",
-        "typescript": "^3.3.4000"
+        "typescript": "^3.5.2"
     },
     "dependencies": {
         "lodash": "^4.17.11",
         "redux": "^4.0.1",
-        "redux-saga": "^1.0.2",
-        "redux-saga-test-plan": "^4.0.0-beta.2",
-        "typesafe-actions": "^3.2.1"
+        "redux-saga": "^1.0.5",
+        "redux-saga-test-plan": "^4.0.0-beta.3",
+        "typesafe-actions": "^4.4.2"
     },
     "version": "0.2.1"
 }
