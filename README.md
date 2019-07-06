@@ -1,4 +1,4 @@
-# assert-saga
+# redux-saga-assert
 
 Various helpers for testing your redux-sagas.
 
