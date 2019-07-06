@@ -21,7 +21,7 @@ const isSingleActionAssertion = (
 ): args is SingleActionAssertionArguments =>
     (args as SingleActionAssertionArguments).action !== undefined;
 
-class SagaAssertImplementation {
+export class SagaAssertImplementation {
     private readonly saga: SagaType;
 
     public constructor(saga: SagaType) {
