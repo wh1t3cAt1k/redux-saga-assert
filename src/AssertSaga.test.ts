@@ -33,7 +33,7 @@ function* watcherRespondingToLatestWithArguments() {
     yield effects.takeLatest(
         [getType(relevantAction), getType(anotherRelevantAction)],
         handlerSagaWithArgumentsStub,
-        handlerSagaArgument,
+        handlerSagaArgument
     );
 }
 
@@ -41,7 +41,7 @@ function* watcherRespondingToLatest() {
     yield effects.takeLatest(
         [getType(relevantAction), getType(anotherRelevantAction)],
         handlerSagaStub
-    )
+    );
 }
 
 function* watcherRespondingToIrrelevantLatest() {
@@ -72,7 +72,10 @@ function* watcherRespondingToLeading() {
     yield effects.takeLeading(getType(relevantAction), handlerSagaStub);
 }
 
-const getAssertionOperationWithHandlerArguments = (saga: SagaType, ...sagaArgs: any[]) => () =>
+const getAssertionOperationWithHandlerArguments = (
+    saga: SagaType,
+    ...sagaArgs: any[]
+) => () =>
     assertSaga(saga).justRespondsToLatest({
         actions: [anotherRelevantAction, relevantAction],
         withHandler: handlerSagaWithArgumentsStub,
@@ -87,9 +90,7 @@ const getAssertionOperation = (saga: SagaType) => () =>
 
 describe(assertSaga(handlerSagaStub).justRespondsToLatest, () => {
     it('passes when saga responds to latest specified actions regardless of order', () => {
-        expect(
-            getAssertionOperation(watcherRespondingToLatest)
-        ).not.toThrow();
+        expect(getAssertionOperation(watcherRespondingToLatest)).not.toThrow();
     });
 
     it('passes regardless of whether action argument is an array or a single action', () => {
@@ -141,27 +142,33 @@ describe(assertSaga(handlerSagaStub).justRespondsToLatest, () => {
 describe(assertSaga(handlerSagaWithArgumentsStub).justRespondsToLatest, () => {
     it('passes when saga responds to latest specified actions regardless of order and passes arguments to the handler', () => {
         expect(
-            getAssertionOperationWithHandlerArguments(watcherRespondingToLatestWithArguments, handlerSagaArgument)
+            getAssertionOperationWithHandlerArguments(
+                watcherRespondingToLatestWithArguments,
+                handlerSagaArgument
+            )
         ).not.toThrow();
     });
 
     it('passes regardless of whether action argument is an array or a single action and passes arguments to the handler', () => {
         function* watcherRespondingToOneLatestWithNonArraySignature() {
-            yield effects.takeLatest(getType(relevantAction), handlerSagaWithArgumentsStub, handlerSagaArgument);
+            yield effects.takeLatest(
+                getType(relevantAction),
+                handlerSagaWithArgumentsStub,
+                handlerSagaArgument
+            );
         }
 
         expect(() =>
             assertSaga(
-                watcherRespondingToOneLatestWithNonArraySignature,
+                watcherRespondingToOneLatestWithNonArraySignature
             ).justRespondsToLatest({
                 action: relevantAction,
                 withHandler: handlerSagaWithArgumentsStub,
-                handlerArgs: [ handlerSagaArgument ]
+                handlerArgs: [handlerSagaArgument],
             })
         ).not.toThrow();
     });
 });
-
 
 describe(assertSaga(handlerSagaStub).justSpawnsAsync, () => {
     it.each<[SagaType]>([
@@ -179,7 +186,7 @@ describe(assertSaga(handlerSagaStub).justSpawnsAsync, () => {
             function*() {
                 yield effects.spawn(correctWatcherRespondingToEvery);
                 yield effects.spawn(watcherRespondingToLatest);
-                yield effects.spawn(watcherRespondingToLatestWithArguments),
+                yield effects.spawn(watcherRespondingToLatestWithArguments);
                 yield effects.spawn(watcherRespondingToLeading);
             },
         ],
@@ -203,9 +210,7 @@ describe(assertSaga(handlerSagaStub).justSpawnsAsync, () => {
         };
 
         try {
-            await assertSaga(saga).justSpawnsAsync(
-                watcherRespondingToLatest
-            );
+            await assertSaga(saga).justSpawnsAsync(watcherRespondingToLatest);
         } catch {
             return;
         }

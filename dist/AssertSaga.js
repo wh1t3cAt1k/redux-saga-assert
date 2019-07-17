@@ -89,8 +89,8 @@ class SagaAssertImplementation {
             const actionTypes = actions
                 .map(action => typesafe_actions_1.getType(action))
                 .sort();
-            const sagaArgs = args.handlerArgs === undefined ? [] : args.handlerArgs;
-            const saga = this.saga(...sagaArgs);
+            const hasArguments = args.handlerArgs !== undefined;
+            const saga = hasArguments ? this.saga(args.handlerArgs) : this.saga();
             const nextSagaValue = saga.next().value;
             if (nextSagaValue === undefined ||
                 nextSagaValue.payload === undefined ||
@@ -108,7 +108,9 @@ class SagaAssertImplementation {
                 // -
                 actionTypesArgument.sort();
             }
-            expect(nextSagaValue).toEqual(createEffect(actionTypes, args.withHandler, ...sagaArgs));
+            expect(nextSagaValue).toEqual(hasArguments
+                ? createEffect(actionTypes, args.withHandler, ...args.handlerArgs)
+                : createEffect(actionTypes, args.withHandler));
             expect(saga.next().done).toBe(true);
         };
         this.saga = saga;

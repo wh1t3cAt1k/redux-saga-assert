@@ -10,13 +10,16 @@ import { getType } from 'typesafe-actions';
 type SingleActionAssertionArguments = {
     action: ActionCreator<AnyAction>;
     withHandler: SagaType;
-    handlerArgs?: HelperWorkerParameters<ActionCreator<AnyAction>, SagaType>
+    handlerArgs?: HelperWorkerParameters<ActionCreator<AnyAction>, SagaType>;
 };
 
 type MultipleActionsAssertionArguments = {
     actions: ReadonlyArray<ActionCreator<AnyAction>>;
     withHandler: SagaType;
-    handlerArgs?: HelperWorkerParameters<ReadonlyArray<ActionCreator<AnyAction>>, SagaType>
+    handlerArgs?: HelperWorkerParameters<
+        ReadonlyArray<ActionCreator<AnyAction>>,
+        SagaType
+    >;
 };
 
 const isSingleActionAssertion = (
@@ -116,7 +119,11 @@ export class SagaAssertImplementation {
         args:
             | SingleActionAssertionArguments
             | MultipleActionsAssertionArguments,
-        createEffect: (pattern: string[], handler: SagaType, ...handlerArgs: any[]) => unknown
+        createEffect: (
+            pattern: string[],
+            handler: SagaType,
+            handlerArgs?: any[]
+        ) => unknown
     ) => {
         const actions = isSingleActionAssertion(args)
             ? [args.action]
@@ -126,9 +133,9 @@ export class SagaAssertImplementation {
             .map(action => getType(action) as string)
             .sort();
 
-        const sagaArgs = args.handlerArgs === undefined ? [] : args.handlerArgs;
+        const hasArguments = args.handlerArgs !== undefined;
 
-        const saga = this.saga(...sagaArgs);
+        const saga = hasArguments ? this.saga(args.handlerArgs) : this.saga();
         const nextSagaValue = saga.next().value;
 
         if (
@@ -156,7 +163,13 @@ export class SagaAssertImplementation {
         }
 
         expect(nextSagaValue).toEqual(
-            createEffect(actionTypes, args.withHandler, ...sagaArgs)
+            hasArguments
+                ? createEffect(
+                      actionTypes,
+                      args.withHandler,
+                      ...args.handlerArgs!
+                  )
+                : createEffect(actionTypes, args.withHandler)
         );
 
         expect(saga.next().done).toBe(true);

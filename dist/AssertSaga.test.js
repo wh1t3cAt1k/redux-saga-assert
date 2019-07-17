@@ -110,7 +110,7 @@ describe(AssertSaga_1.assertSaga(handlerSagaWithArgumentsStub).justRespondsToLat
         expect(() => AssertSaga_1.assertSaga(watcherRespondingToOneLatestWithNonArraySignature).justRespondsToLatest({
             action: relevantAction,
             withHandler: handlerSagaWithArgumentsStub,
-            handlerArgs: [handlerSagaArgument]
+            handlerArgs: [handlerSagaArgument],
         })).not.toThrow();
     });
 });
@@ -130,8 +130,8 @@ describe(AssertSaga_1.assertSaga(handlerSagaStub).justSpawnsAsync, () => {
             function* () {
                 yield effects.spawn(correctWatcherRespondingToEvery);
                 yield effects.spawn(watcherRespondingToLatest);
-                yield effects.spawn(watcherRespondingToLatestWithArguments),
-                    yield effects.spawn(watcherRespondingToLeading);
+                yield effects.spawn(watcherRespondingToLatestWithArguments);
+                yield effects.spawn(watcherRespondingToLeading);
             },
         ],
     ])('passes when saga spawns the specified sagas regardless of order and does nothing else', (saga) => __awaiter(this, void 0, void 0, function* () {
