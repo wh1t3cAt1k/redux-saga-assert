@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { ActionCreator, AnyAction } from 'redux';
+import { HelperWorkerParameters } from 'redux-saga/effects';
 import { expectSaga, SagaType } from 'redux-saga-test-plan';
 import * as matchers from 'redux-saga-test-plan/matchers';
 import * as providers from 'redux-saga-test-plan/providers';
@@ -9,11 +10,13 @@ import { getType } from 'typesafe-actions';
 type SingleActionAssertionArguments = {
     action: ActionCreator<AnyAction>;
     withHandler: SagaType;
+    handlerArgs?: HelperWorkerParameters<ActionCreator<AnyAction>, SagaType>
 };
 
 type MultipleActionsAssertionArguments = {
     actions: ReadonlyArray<ActionCreator<AnyAction>>;
     withHandler: SagaType;
+    handlerArgs?: HelperWorkerParameters<ReadonlyArray<ActionCreator<AnyAction>>, SagaType>
 };
 
 const isSingleActionAssertion = (
@@ -113,16 +116,19 @@ export class SagaAssertImplementation {
         args:
             | SingleActionAssertionArguments
             | MultipleActionsAssertionArguments,
-        createEffect: (pattern: string[], handler: SagaType) => unknown
+        createEffect: (pattern: string[], handler: SagaType, ...handlerArgs: any[]) => unknown
     ) => {
         const actions = isSingleActionAssertion(args)
             ? [args.action]
             : args.actions;
+
         const actionTypes = actions
             .map(action => getType(action) as string)
             .sort();
 
-        const saga = this.saga();
+        const sagaArgs = args.handlerArgs === undefined ? [] : args.handlerArgs;
+
+        const saga = this.saga(...sagaArgs);
         const nextSagaValue = saga.next().value;
 
         if (
@@ -150,7 +156,7 @@ export class SagaAssertImplementation {
         }
 
         expect(nextSagaValue).toEqual(
-            createEffect(actionTypes, args.withHandler)
+            createEffect(actionTypes, args.withHandler, ...sagaArgs)
         );
 
         expect(saga.next().done).toBe(true);

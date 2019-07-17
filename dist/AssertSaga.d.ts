@@ -1,12 +1,15 @@
 import { ActionCreator, AnyAction } from 'redux';
+import { HelperWorkerParameters } from 'redux-saga/effects';
 import { SagaType } from 'redux-saga-test-plan';
 declare type SingleActionAssertionArguments = {
     action: ActionCreator<AnyAction>;
     withHandler: SagaType;
+    handlerArgs?: HelperWorkerParameters<ActionCreator<AnyAction>, SagaType>;
 };
 declare type MultipleActionsAssertionArguments = {
     actions: ReadonlyArray<ActionCreator<AnyAction>>;
     withHandler: SagaType;
+    handlerArgs?: HelperWorkerParameters<ReadonlyArray<ActionCreator<AnyAction>>, SagaType>;
 };
 export declare class SagaAssertImplementation {
     private readonly saga;
