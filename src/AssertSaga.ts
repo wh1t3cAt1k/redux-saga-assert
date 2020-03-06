@@ -149,8 +149,8 @@ export class SagaAssertImplementation {
             actionTypesArgument.sort();
         }
 
-        expect(nextSagaValue).toEqual(
-            createEffect(actionTypes, args.withHandler)
+        expect(JSON.stringify(nextSagaValue)).toEqual(
+            JSON.stringify(createEffect(actionTypes, args.withHandler))
         );
 
         expect(saga.next().done).toBe(true);
