@@ -11,9 +11,9 @@ beforeEach(() => {
     console.error = consoleError;
 });
 
-const relevantAction = createAction('some/ACTION');
-const anotherRelevantAction = createAction('some/OTHER_ACTION');
-const irrelevantAction = createAction('some/IRRELEVANT_ACTION');
+const relevantAction = createAction('some/ACTION')();
+const anotherRelevantAction = createAction('some/OTHER_ACTION')();
+const irrelevantAction = createAction('some/IRRELEVANT_ACTION')();
 
 function* handlerSagaStub() {
     yield undefined;

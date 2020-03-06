@@ -64,7 +64,7 @@ export class SagaAssertImplementation {
             .concat([
                 [
                     matchers.spawn.like({}),
-                    providers.dynamic<effects.ForkEffectDescriptor>(effect => {
+                    providers.dynamic<effects.ForkEffectDescriptor<any>>(effect => {
                         throw new Error(
                             `Unexpected function spawned: ${effect.fn.name}`
                         );
@@ -72,7 +72,7 @@ export class SagaAssertImplementation {
                 ],
                 [
                     matchers.fork.like({}),
-                    providers.dynamic<effects.ForkEffectDescriptor>(effect => {
+                    providers.dynamic<effects.ForkEffectDescriptor<any>>(effect => {
                         throw new Error(
                             `Unexpected function forked: ${effect.fn.name}`
                         );
@@ -90,7 +90,7 @@ export class SagaAssertImplementation {
                 ],
                 [
                     matchers.call.like({}),
-                    providers.dynamic<effects.CallEffectDescriptor>(effect => {
+                    providers.dynamic<effects.CallEffectDescriptor<any>>(effect => {
                         throw new Error(
                             `Unexpected function called: ${effect.fn.name}`
                         );
