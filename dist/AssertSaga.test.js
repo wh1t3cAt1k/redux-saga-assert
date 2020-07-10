@@ -1,9 +1,10 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -23,9 +24,9 @@ const consoleError = console.error;
 beforeEach(() => {
     console.error = consoleError;
 });
-const relevantAction = typesafe_actions_1.createAction('some/ACTION');
-const anotherRelevantAction = typesafe_actions_1.createAction('some/OTHER_ACTION');
-const irrelevantAction = typesafe_actions_1.createAction('some/IRRELEVANT_ACTION');
+const relevantAction = typesafe_actions_1.createAction('some/ACTION')();
+const anotherRelevantAction = typesafe_actions_1.createAction('some/OTHER_ACTION')();
+const irrelevantAction = typesafe_actions_1.createAction('some/IRRELEVANT_ACTION')();
 const handlerSagaArgument = '42';
 function* handlerSagaStub() {
     yield undefined;
@@ -134,10 +135,10 @@ describe(AssertSaga_1.assertSaga(handlerSagaStub).justSpawnsAsync, () => {
                 yield effects.spawn(watcherRespondingToLeading);
             },
         ],
-    ])('passes when saga spawns the specified sagas regardless of order and does nothing else', (saga) => __awaiter(this, void 0, void 0, function* () {
+    ])('passes when saga spawns the specified sagas regardless of order and does nothing else', (saga) => __awaiter(void 0, void 0, void 0, function* () {
         return AssertSaga_1.assertSaga(saga).justSpawnsAsync(watcherRespondingToLeading, watcherRespondingToLatest, watcherRespondingToLatestWithArguments, correctWatcherRespondingToEvery);
     }));
-    it('fails when saga forks instead of spawns', () => __awaiter(this, void 0, void 0, function* () {
+    it('fails when saga forks instead of spawns', () => __awaiter(void 0, void 0, void 0, function* () {
         console.error = jest.fn();
         const saga = function* () {
             yield effects.fork(watcherRespondingToLatest);
@@ -150,7 +151,7 @@ describe(AssertSaga_1.assertSaga(handlerSagaStub).justSpawnsAsync, () => {
         }
         throw new Error();
     }));
-    it('fails when saga contains additional call effects', () => __awaiter(this, void 0, void 0, function* () {
+    it('fails when saga contains additional call effects', () => __awaiter(void 0, void 0, void 0, function* () {
         console.error = jest.fn();
         const saga = function* () {
             yield effects.spawn(correctWatcherRespondingToEvery);
@@ -166,7 +167,7 @@ describe(AssertSaga_1.assertSaga(handlerSagaStub).justSpawnsAsync, () => {
         }
         throw new Error();
     }));
-    it('fails when saga contains additional put effects', () => __awaiter(this, void 0, void 0, function* () {
+    it('fails when saga contains additional put effects', () => __awaiter(void 0, void 0, void 0, function* () {
         console.error = jest.fn();
         const saga = function* () {
             yield effects.spawn(correctWatcherRespondingToEvery);
@@ -182,7 +183,7 @@ describe(AssertSaga_1.assertSaga(handlerSagaStub).justSpawnsAsync, () => {
         }
         throw new Error();
     }));
-    it('fails when saga contains additional spawn effects', () => __awaiter(this, void 0, void 0, function* () {
+    it('fails when saga contains additional spawn effects', () => __awaiter(void 0, void 0, void 0, function* () {
         console.error = jest.fn();
         const saga = function* () {
             yield effects.spawn(correctWatcherRespondingToEvery);
@@ -196,7 +197,7 @@ describe(AssertSaga_1.assertSaga(handlerSagaStub).justSpawnsAsync, () => {
         }
         throw new Error();
     }));
-    it('fails when saga contains insufficient spawn effects', () => __awaiter(this, void 0, void 0, function* () {
+    it('fails when saga contains insufficient spawn effects', () => __awaiter(void 0, void 0, void 0, function* () {
         console.error = jest.fn();
         const saga = function* () {
             yield effects.spawn(correctWatcherRespondingToEvery);
