@@ -1,3 +1,7 @@
+# 0.5.0
+
+Added support for handling saga arguments in `justRespondsToX`-asserts.
+
 # 0.4.1
 
 Fix bug whereby `justRespondsToX` failed when the expected / actual effect contained different instances of the same function.
