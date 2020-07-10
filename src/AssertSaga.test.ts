@@ -15,12 +15,26 @@ const relevantAction = createAction('some/ACTION')();
 const anotherRelevantAction = createAction('some/OTHER_ACTION')();
 const irrelevantAction = createAction('some/IRRELEVANT_ACTION')();
 
+const handlerSagaArgument = '42';
+
 function* handlerSagaStub() {
+    yield undefined;
+}
+
+function* handlerSagaWithArgumentsStub(_arg: string) {
     yield undefined;
 }
 
 function* irrelevantHandlerSagaStub() {
     yield 42;
+}
+
+function* watcherRespondingToLatestWithArguments() {
+    yield effects.takeLatest(
+        [getType(relevantAction), getType(anotherRelevantAction)],
+        handlerSagaWithArgumentsStub,
+        handlerSagaArgument
+    );
 }
 
 function* watcherRespondingToLatest() {
@@ -58,6 +72,16 @@ function* watcherRespondingToLeading() {
     yield effects.takeLeading(getType(relevantAction), handlerSagaStub);
 }
 
+const getAssertionOperationWithHandlerArguments = (
+    saga: SagaType,
+    ...sagaArgs: any[]
+) => () =>
+    assertSaga(saga).justRespondsToLatest({
+        actions: [anotherRelevantAction, relevantAction],
+        withHandler: handlerSagaWithArgumentsStub,
+        handlerArgs: sagaArgs,
+    });
+
 const getAssertionOperation = (saga: SagaType) => () =>
     assertSaga(saga).justRespondsToLatest({
         actions: [anotherRelevantAction, relevantAction],
@@ -66,9 +90,7 @@ const getAssertionOperation = (saga: SagaType) => () =>
 
 describe(assertSaga(handlerSagaStub).justRespondsToLatest, () => {
     it('passes when saga responds to latest specified actions regardless of order', () => {
-        expect(
-            getAssertionOperation(watcherRespondingToLatest)
-        ).not.toThrow();
+        expect(getAssertionOperation(watcherRespondingToLatest)).not.toThrow();
     });
 
     it('passes regardless of whether action argument is an array or a single action', () => {
@@ -117,6 +139,37 @@ describe(assertSaga(handlerSagaStub).justRespondsToLatest, () => {
     });
 });
 
+describe(assertSaga(handlerSagaWithArgumentsStub).justRespondsToLatest, () => {
+    it('passes when saga responds to latest specified actions regardless of order and passes arguments to the handler', () => {
+        expect(
+            getAssertionOperationWithHandlerArguments(
+                watcherRespondingToLatestWithArguments,
+                handlerSagaArgument
+            )
+        ).not.toThrow();
+    });
+
+    it('passes regardless of whether action argument is an array or a single action and passes arguments to the handler', () => {
+        function* watcherRespondingToOneLatestWithNonArraySignature() {
+            yield effects.takeLatest(
+                getType(relevantAction),
+                handlerSagaWithArgumentsStub,
+                handlerSagaArgument
+            );
+        }
+
+        expect(() =>
+            assertSaga(
+                watcherRespondingToOneLatestWithNonArraySignature
+            ).justRespondsToLatest({
+                action: relevantAction,
+                withHandler: handlerSagaWithArgumentsStub,
+                handlerArgs: [handlerSagaArgument],
+            })
+        ).not.toThrow();
+    });
+});
+
 describe(assertSaga(handlerSagaStub).justSpawnsAsync, () => {
     it.each<[SagaType]>([
         [
@@ -124,6 +177,7 @@ describe(assertSaga(handlerSagaStub).justSpawnsAsync, () => {
                 yield effects.all([
                     effects.spawn(correctWatcherRespondingToEvery),
                     effects.spawn(watcherRespondingToLatest),
+                    effects.spawn(watcherRespondingToLatestWithArguments),
                     effects.spawn(watcherRespondingToLeading),
                 ]);
             },
@@ -132,6 +186,7 @@ describe(assertSaga(handlerSagaStub).justSpawnsAsync, () => {
             function*() {
                 yield effects.spawn(correctWatcherRespondingToEvery);
                 yield effects.spawn(watcherRespondingToLatest);
+                yield effects.spawn(watcherRespondingToLatestWithArguments);
                 yield effects.spawn(watcherRespondingToLeading);
             },
         ],
@@ -141,6 +196,7 @@ describe(assertSaga(handlerSagaStub).justSpawnsAsync, () => {
             return assertSaga(saga).justSpawnsAsync(
                 watcherRespondingToLeading,
                 watcherRespondingToLatest,
+                watcherRespondingToLatestWithArguments,
                 correctWatcherRespondingToEvery
             );
         }
@@ -154,9 +210,7 @@ describe(assertSaga(handlerSagaStub).justSpawnsAsync, () => {
         };
 
         try {
-            await assertSaga(saga).justSpawnsAsync(
-                watcherRespondingToLatest
-            );
+            await assertSaga(saga).justSpawnsAsync(watcherRespondingToLatest);
         } catch {
             return;
         }
